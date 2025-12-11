@@ -9,7 +9,7 @@
     <style>
         /* 基础设置 */
         body {
-            background-color: #f5f5f7;
+            background-color: #ffffff; /* 背景色改为纯白，因为容器全屏了 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,22 +19,20 @@
             font-family: 'Noto Serif SC', serif;
         }
 
-        /* 5:1 比例容器 */
+        /* 全屏容器 */
         .canvas-container {
-            width: 95vw;
-            /* 强制 5:1 比例 */
-            height: 19vw; 
+            width: 100vw;
+            height: 100vh; 
             background-color: #ffffff;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            /* 移除阴影和边框，实现无边界全屏 */
             position: relative;
             overflow: hidden;
-            border: 1px solid #e0e0e0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end; /* 让内容（SVG）底部对齐 */
         }
 
-        /* 纸张纹理叠加 */
+        /* 纸张纹理叠加 - 覆盖全屏 */
         .texture-overlay {
             position: absolute;
             top: 0;
@@ -46,20 +44,22 @@
             z-index: 10;
         }
 
-        /* 文字样式 */
+        /* 文字样式 - 调整位置以适应全屏 */
         .title-group {
             position: absolute;
             z-index: 20;
-            text-align: right;
-            top: 12%;
-            right: 4%;
+            text-align: center; /* 改为居中，更有封面感 */
+            top: 15%; /* 位于天空中部 */
+            left: 0;
+            right: 0;
+            margin: auto;
             color: #1a1a1a;
             mix-blend-mode: multiply;
         }
 
         .main-title {
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 5vw;
+            font-size: 8vw; /* 增大字体 */
             line-height: 1;
             margin: 0;
             opacity: 0;
@@ -68,12 +68,12 @@
 
         .sub-title {
             font-family: 'Noto Serif SC', serif;
-            font-size: 0.8vw;
-            letter-spacing: 0.4em;
-            margin-top: 0.8vw;
+            font-size: 1.2vw;
+            letter-spacing: 0.8em;
+            margin-top: 1.5vw;
             text-transform: uppercase;
             border-top: 2px solid #1a1a1a;
-            padding-top: 0.5vw;
+            padding-top: 1vw;
             display: inline-block;
             font-weight: 700;
             opacity: 0;
@@ -127,7 +127,7 @@
             }
         }
 
-        /* 装饰性网格 */
+        /* 装饰性网格 - 覆盖全屏 */
         .grid-bg {
             position: absolute;
             width: 100%;
@@ -135,7 +135,7 @@
             background-image: 
                 linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: 2vw 2vw;
+            background-size: 40px 40px; /* 固定网格大小 */
             z-index: 1;
         }
     </style>
@@ -155,8 +155,13 @@
             <div class="sub-title">Shenzhen · City of Innovation</div>
         </div>
 
-        <!-- SVG 矢量绘图区 -->
-        <svg viewBox="0 0 2000 400" preserveAspectRatio="xMidYMax meet" class="w-full h-full absolute bottom-0 left-0 z-10">
+        <!-- SVG 矢量绘图区 
+             viewBox 保持 2000x400 (5:1)
+             preserveAspectRatio="xMidYMax slice" -> 强制填满宽度，保持底部对齐，
+             这样在宽屏上会切掉顶部天空（没关系因为是空的），在窄屏上会切掉左右（需要注意）。
+             改为 "xMidYMax meet" -> 确保所有建筑都显示，宽度铺满，高度不够的地方留白（即显示背景天空）。
+        -->
+        <svg viewBox="0 0 2000 400" preserveAspectRatio="xMidYMax meet" class="w-full absolute bottom-0 left-0 z-10" style="max-height: 50vh;">
             <defs>
                 <!-- 渐变定义 -->
                 <linearGradient id="sky-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -280,4 +285,10 @@
         </svg>
 
         <!-- 底部说明信息 -->
-        <div class="absolute bottom-4 left-8 text-xs text-gray-400 font-
+        <div class="absolute bottom-4 left-8 text-xs text-gray-400 font-mono tracking-widest fade-in">
+            SZ / FUTIAN-NANSHAN DISTRICT SKYLINE / ARCHITECTURAL STUDY
+        </div>
+    </div>
+
+</body>
+</html>
