@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>深圳 - 城市线稿展示</title>
+    <title>第一章：被重塑的地平线 - 城市线稿</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;700&display=swap" rel="stylesheet">
     <style>
         /* 基础设置 */
         body {
-            background-color: #ffffff; /* 背景色改为纯白，因为容器全屏了 */
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,15 +24,14 @@
             width: 100vw;
             height: 100vh; 
             background-color: #ffffff;
-            /* 移除阴影和边框，实现无边界全屏 */
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
-            align-items: flex-end; /* 让内容（SVG）底部对齐 */
+            align-items: flex-end;
         }
 
-        /* 纸张纹理叠加 - 覆盖全屏 */
+        /* 纸张纹理叠加 */
         .texture-overlay {
             position: absolute;
             top: 0;
@@ -48,8 +47,8 @@
         .title-group {
             position: absolute;
             z-index: 20;
-            text-align: center; /* 改为居中，更有封面感 */
-            top: 15%; /* 位于天空中部 */
+            text-align: center;
+            top: 15%;
             left: 0;
             right: 0;
             margin: auto;
@@ -59,21 +58,24 @@
 
         .main-title {
             font-family: 'Ma Shan Zheng', cursive;
-            font-size: 8vw; /* 增大字体 */
+            font-size: 5vw; /* 缩小字号以容纳更长的标题 */
             line-height: 1;
             margin: 0;
             opacity: 0;
             animation: fadeInMove 1.5s ease-out 2s forwards;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .sub-title {
             font-family: 'Noto Serif SC', serif;
-            font-size: 1.2vw;
-            letter-spacing: 0.8em;
+            font-size: 1vw;
+            letter-spacing: 0.3em;
             margin-top: 1.5vw;
             text-transform: uppercase;
-            border-top: 2px solid #1a1a1a;
+            border-top: 1px solid #1a1a1a;
             padding-top: 1vw;
+            padding-left: 1vw;
+            padding-right: 1vw;
             display: inline-block;
             font-weight: 700;
             opacity: 0;
@@ -97,6 +99,16 @@
             stroke-dasharray: 3000;
             stroke-dashoffset: 3000;
             animation: draw 3.5s ease-in-out 0.8s forwards;
+        }
+
+        .cloud-move {
+            animation: floatCloud 60s linear infinite;
+        }
+
+        .bird-fly {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: draw 1s ease-out 3s forwards, floatBird 10s linear infinite;
         }
 
         .fade-in {
@@ -127,7 +139,18 @@
             }
         }
 
-        /* 装饰性网格 - 覆盖全屏 */
+        @keyframes floatCloud {
+            from { transform: translateX(0); }
+            to { transform: translateX(100px); }
+        }
+
+         @keyframes floatBird {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -10px); }
+            100% { transform: translate(40px, 0); }
+        }
+
+        /* 装饰性网格 */
         .grid-bg {
             position: absolute;
             width: 100%;
@@ -135,7 +158,7 @@
             background-image: 
                 linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: 40px 40px; /* 固定网格大小 */
+            background-size: 40px 40px;
             z-index: 1;
         }
     </style>
@@ -151,35 +174,39 @@
 
         <!-- 标题区域 -->
         <div class="title-group">
-            <h1 class="main-title">深圳</h1>
-            <div class="sub-title">Shenzhen · City of Innovation</div>
+            <h1 class="main-title">第一章：被重塑的地平线</h1>
+            <div class="sub-title">Chapter 1 : The Reshaped Horizon</div>
         </div>
 
-        <!-- SVG 矢量绘图区 
-             viewBox 保持 2000x400 (5:1)
-             preserveAspectRatio="xMidYMax slice" -> 强制填满宽度，保持底部对齐，
-             这样在宽屏上会切掉顶部天空（没关系因为是空的），在窄屏上会切掉左右（需要注意）。
-             改为 "xMidYMax meet" -> 确保所有建筑都显示，宽度铺满，高度不够的地方留白（即显示背景天空）。
-        -->
+        <!-- SVG 矢量绘图区 -->
         <svg viewBox="0 0 2000 400" preserveAspectRatio="xMidYMax meet" class="w-full absolute bottom-0 left-0 z-10" style="max-height: 50vh;">
             <defs>
-                <!-- 渐变定义 -->
                 <linearGradient id="sky-gradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
-                    <stop offset="100%" stop-color="#f0f0f0" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#f0f0f0" stop-opacity="0.8"/>
                 </linearGradient>
             </defs>
 
-            <!-- 1. 远景：梧桐山轮廓 (淡化处理) -->
+            <!-- 0. 环境元素：云与鸟 -->
+            <g opacity="0.4" stroke="#999" fill="none" stroke-width="0.8">
+                <path d="M200,80 Q250,60 300,80 T400,85" class="cloud-move" />
+                <path d="M1200,50 Q1250,30 1300,50 T1400,55" class="cloud-move" style="animation-delay: -20s" />
+                <path d="M1700,90 Q1750,70 1800,90" class="cloud-move" style="animation-delay: -10s" />
+            </g>
+            <g stroke="#333" fill="none" stroke-width="1.2">
+                <path d="M1500,100 Q1510,90 1520,100" class="bird-fly" />
+                <path d="M1530,110 Q1540,100 1550,110" class="bird-fly" style="animation-delay: 3.2s" />
+            </g>
+
+            <!-- 1. 远景：梧桐山轮廓 -->
             <path d="M0,380 L100,340 Q300,280 500,350 T900,320 T1400,360 T2000,350 L2000,400 L0,400 Z" 
                   fill="url(#sky-gradient)" stroke="#d4d4d4" stroke-width="1" class="draw-path-delayed" />
 
-            <!-- 2. 深圳湾大桥 (左侧) - 增加拉索细节 -->
+            <!-- 2. 深圳湾大桥 (左侧) -->
             <g transform="translate(-50, 0)">
                 <path d="M0,380 L400,330 L600,380" fill="none" stroke="#333" stroke-width="1.5" class="draw-path" />
-                <!-- 桥塔 -->
                 <line x1="400" y1="330" x2="400" y2="240" stroke="#333" stroke-width="2.5" class="draw-path" />
-                <line x1="400" y1="240" x2="410" y2="220" stroke="#333" stroke-width="1" class="draw-path" /> <!-- 塔尖 -->
+                <line x1="400" y1="240" x2="410" y2="220" stroke="#333" stroke-width="1" class="draw-path" />
                 <!-- 拉索组 -->
                 <line x1="400" y1="250" x2="250" y2="360" stroke="#666" stroke-width="0.5" class="draw-path-delayed" />
                 <line x1="400" y1="270" x2="300" y2="350" stroke="#666" stroke-width="0.5" class="draw-path-delayed" />
@@ -188,61 +215,68 @@
                 <line x1="400" y1="270" x2="480" y2="350" stroke="#666" stroke-width="0.5" class="draw-path-delayed" />
             </g>
 
-            <!-- 3. 核心建筑群 (居中优化) -->
+            <!-- 3. 核心建筑群 (居中) -->
             <g transform="translate(550, 40)"> 
+
+                <!-- Z. 密集背景楼宇层 (新增内容，增加厚度) -->
+                <g stroke="#bbb" stroke-width="0.8" fill="none" class="draw-path-delayed" transform="translate(0, 10)">
+                    <!-- 左侧背景群 -->
+                    <path d="M-50,340 L-50,260 L-20,260 L-20,340" />
+                    <path d="M10,340 L10,240 L40,240 L40,340" />
+                    <path d="M180,340 L180,230 L220,230 L220,340" /> <!-- 填补地王和腾讯之间 -->
+                    <rect x="190" y="240" width="20" height="90" stroke-dasharray="2,2" stroke-opacity="0.5"/>
+                    
+                    <!-- 中间背景群 -->
+                    <path d="M280,340 L280,200 L320,190 L330,340" /> <!-- 平安左侧 -->
+                    <path d="M450,340 L450,220 L480,220 L480,340" /> <!-- 平安右侧 -->
+                    
+                    <!-- 右侧背景群 -->
+                    <path d="M600,340 L600,230 L630,220 L640,340" />
+                    <path d="M700,340 L700,250 L730,250 L730,340" />
+                    <path d="M760,340 L760,260 L790,260 L790,340" />
+                </g>
                 
-                <!-- A. 腾讯滨海大厦 (左侧) - 三道连廊细节 -->
+                <!-- A. 腾讯滨海大厦 (左侧) -->
                 <g class="draw-path">
-                    <!-- 南塔 -->
-                    <path d="M50,340 L50,180 L100,180 L100,340" fill="none" stroke="#333" stroke-width="1.5" />
-                    <!-- 北塔 -->
-                    <path d="M120,340 L120,150 L170,150 L170,340" fill="none" stroke="#333" stroke-width="1.5" />
-                    <!-- 连廊 (标志性特征) -->
+                    <path d="M50,340 L50,180 L100,180 L100,340" fill="white" stroke="#333" stroke-width="1.5" />
+                    <path d="M120,340 L120,150 L170,150 L170,340" fill="white" stroke="#333" stroke-width="1.5" />
                     <rect x="100" y="190" width="20" height="15" fill="#fff" stroke="#333" stroke-width="1" />
                     <rect x="100" y="240" width="20" height="15" fill="#fff" stroke="#333" stroke-width="1" />
                     <rect x="100" y="290" width="20" height="15" fill="#fff" stroke="#333" stroke-width="1" />
                 </g>
 
-                <!-- B. 地王大厦 (新增 - 经典双塔尖) -->
+                <!-- B. 地王大厦 -->
                 <g transform="translate(200, 0)" class="draw-path-delayed">
-                    <rect x="0" y="160" width="40" height="180" fill="none" stroke="#333" stroke-width="1.5" />
-                    <line x1="10" y1="160" x2="10" y2="120" stroke="#333" stroke-width="1" /> <!-- 左尖 -->
-                    <line x1="30" y1="160" x2="30" y2="110" stroke="#333" stroke-width="1" /> <!-- 右尖(高) -->
-                    <!-- 窗格暗示 -->
+                    <rect x="0" y="160" width="40" height="180" fill="white" stroke="#333" stroke-width="1.5" />
+                    <line x1="10" y1="160" x2="10" y2="120" stroke="#333" stroke-width="1" />
+                    <line x1="30" y1="160" x2="30" y2="110" stroke="#333" stroke-width="1" />
                     <line x1="0" y1="200" x2="40" y2="200" stroke="#999" stroke-width="0.5" />
                     <line x1="0" y1="240" x2="40" y2="240" stroke="#999" stroke-width="0.5" />
                 </g>
 
-                <!-- C. 平安金融中心 (C位) - 增加垂直线条和支撑结构 -->
+                <!-- C. 平安金融中心 (C位) -->
                 <g transform="translate(350, 0)">
-                    <!-- 主体锥形 -->
                     <path d="M-25,340 L-15,100 L0,20 L15,100 L25,340" 
-                          fill="none" stroke="#111" stroke-width="2" class="draw-path" />
-                    <!-- 塔尖针 -->
+                          fill="white" stroke="#111" stroke-width="2" class="draw-path" />
                     <line x1="0" y1="20" x2="0" y2="0" stroke="#111" stroke-width="1.5" class="draw-path" />
-                    <!-- 垂直立面线条 (不仅是轮廓) -->
                     <line x1="-10" y1="100" x2="-15" y2="340" stroke="#333" stroke-width="0.5" class="draw-path-delayed" />
                     <line x1="10" y1="100" x2="15" y2="340" stroke="#333" stroke-width="0.5" class="draw-path-delayed" />
                     <line x1="0" y1="20" x2="0" y2="340" stroke="#333" stroke-width="0.5" class="draw-path-delayed" />
-                    <!-- 顶部折线 -->
                     <path d="M-15,100 L15,100" stroke="#333" stroke-width="1" class="draw-path-delayed" />
                 </g>
 
-                <!-- D. 京基100 (右侧) - 顶部弧线 -->
+                <!-- D. 京基100 -->
                 <g transform="translate(500, 0)">
                     <path d="M-20,340 L-20,130 Q-20,90 0,90 Q20,90 20,130 L20,340" 
-                          fill="none" stroke="#333" stroke-width="1.8" class="draw-path" />
-                    <!-- 顶部特征横线 -->
+                          fill="white" stroke="#333" stroke-width="1.8" class="draw-path" />
                     <line x1="-20" y1="130" x2="20" y2="130" stroke="#333" stroke-width="0.5" class="draw-path-delayed" />
                     <line x1="-18" y1="110" x2="18" y2="110" stroke="#333" stroke-width="0.5" class="draw-path-delayed" />
                 </g>
 
-                <!-- E. 华润大厦 "春笋" (最右) - 网格结构 -->
+                <!-- E. 华润大厦 "春笋" -->
                 <g transform="translate(650, 0)">
-                    <!-- 子弹头轮廓 -->
                     <path d="M-25,340 L-25,250 Q-25,120 0,120 Q25,120 25,250 L25,340" 
-                          fill="none" stroke="#333" stroke-width="1.8" class="draw-path" />
-                    <!-- Diagrid 斜交网格 -->
+                          fill="white" stroke="#333" stroke-width="1.8" class="draw-path" />
                     <g stroke="#999" stroke-width="0.5" class="draw-path-delayed">
                         <line x1="-25" y1="300" x2="0" y2="280" />
                         <line x1="25" y1="300" x2="0" y2="280" />
@@ -253,19 +287,17 @@
                     </g>
                 </g>
 
-                <!-- F. 市民中心 (前景) - 大跨度飞鸟造型 -->
+                <!-- F. 市民中心 (前景) -->
                 <g transform="translate(350, 300)">
-                    <!-- 红色屋顶轮廓 (这里用黑色表达) -->
                     <path d="M-150,40 Q0,-30 150,40" fill="none" stroke="#000" stroke-width="2" class="draw-path" />
                     <path d="M-150,40 Q-180,50 -200,60" fill="none" stroke="#000" stroke-width="1.5" class="draw-path" />
                     <path d="M150,40 Q180,50 200,60" fill="none" stroke="#000" stroke-width="1.5" class="draw-path" />
-                    <!-- 支撑柱 -->
                     <line x1="-50" y1="15" x2="-50" y2="60" stroke="#333" stroke-width="1" class="draw-path-delayed" />
                     <line x1="50" y1="15" x2="50" y2="60" stroke="#333" stroke-width="1" class="draw-path-delayed" />
                 </g>
 
-                <!-- 背景填充楼宇 (增加城市密度) -->
-                <g stroke="#888" stroke-width="0.8" fill="none" class="draw-path-delayed" transform="translate(0, 0)">
+                <!-- 填充楼宇 (前景/中景补充) -->
+                <g stroke="#666" stroke-width="1" fill="white" class="draw-path-delayed" transform="translate(0, 0)">
                     <path d="M260,340 L260,220 L290,220 L290,340" />
                     <path d="M430,340 L430,200 L460,190 L480,340" />
                     <path d="M580,340 L580,210 L610,210 L610,340" />
